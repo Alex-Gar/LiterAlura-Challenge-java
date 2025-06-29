@@ -1,14 +1,15 @@
 package com.alura.literalura.literalura.models.entities;
 
+import java.util.Set;
 
 import com.alura.literalura.literalura.models.dtos.AutorDto;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,9 +23,8 @@ public class Autor {
     private Integer anioNacimiento;
     private Integer anioMuerte;
 
-    @ManyToOne
-    @JoinColumn(name = "libro_id", nullable = false)
-    private Libro libro;
+    @ManyToMany(mappedBy = "autores", fetch = FetchType.EAGER)
+    private Set<Libro> libros;
 
     public Autor() {
     }
@@ -67,14 +67,29 @@ public class Autor {
         this.id = id;
     }
 
-    public Libro getLibro() {
-        return libro;
+    public Set<Libro> getLibros() {
+        return libros;
     }
 
-    public void setLibro(Libro libro) {
-        this.libro = libro;
+    public void setLibros(Set<Libro> libros) {
+        libros.forEach(l -> l.getAutores());
+        this.libros = libros;
     }
 
-    
+    // @Override
+    // public String toString() {
+    // return "\n ---- Autor ---- " +
+    // "\n Nombre: " + nombre +
+    // "\n Fecha de Nacimiento: " + anioNacimiento +
+    // "\n Fecha de Fallecimiento: " + anioMuerte ;
+    // }
+    @Override
+    public String toString() {
+        return "\n  ---- Autor ---- " +
+                "\n Nombre: " + nombre +
+                "\n Fecha de Nacimiento: " + anioNacimiento +
+                "\n Fecha de Fallecimiento: " + anioMuerte +
+                "\n Libros: " + libros;
+    }
 
 }
